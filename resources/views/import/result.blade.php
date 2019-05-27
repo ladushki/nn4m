@@ -50,7 +50,7 @@
                                 @foreach($log->errors as $error)
                                         <tr>
                                             <td class="success text-right">{{ $error->store_number }}</td>
-                                            <td class="text-left">{{ $error->tag }}</td>
+                                            <td class="text-left">{{ $error->column_name }}</td>
                                             <td class="text-left">{{ $error->description }}</td>
                                         </tr>
                                 @endforeach

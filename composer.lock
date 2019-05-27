@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7dda00a8d7a9f08ae9f280335c617027",
+    "content-hash": "1d0414531e625179c51a6baeb261058b",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -370,56 +370,6 @@
                 "trusted proxy"
             ],
             "time": "2019-01-10T14:06:47+00:00"
-        },
-        {
-            "name": "fzaninotto/faker",
-            "version": "v1.8.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/fzaninotto/Faker.git",
-                "reference": "f72816b43e74063c8b10357394b6bba8cb1c10de"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/fzaninotto/Faker/zipball/f72816b43e74063c8b10357394b6bba8cb1c10de",
-                "reference": "f72816b43e74063c8b10357394b6bba8cb1c10de",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^5.3.3 || ^7.0"
-            },
-            "require-dev": {
-                "ext-intl": "*",
-                "phpunit/phpunit": "^4.8.35 || ^5.7",
-                "squizlabs/php_codesniffer": "^1.5"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.8-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Faker\\": "src/Faker/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "François Zaninotto"
-                }
-            ],
-            "description": "Faker is a PHP library that generates fake data for you.",
-            "keywords": [
-                "data",
-                "faker",
-                "fixtures"
-            ],
-            "time": "2018-07-12T10:23:15+00:00"
         },
         {
             "name": "jakub-onderka/php-console-color",
@@ -853,60 +803,6 @@
             "description": "HTML and Form Builders for the Laravel Framework",
             "homepage": "https://laravelcollective.com",
             "time": "2019-03-01T22:53:41+00:00"
-        },
-        {
-            "name": "laravie/parser",
-            "version": "v2.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/laravie/parser.git",
-                "reference": "9073e32c15a19d7c0171bc6000d96d3534b6c941"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/laravie/parser/zipball/9073e32c15a19d7c0171bc6000d96d3534b6c941",
-                "reference": "9073e32c15a19d7c0171bc6000d96d3534b6c941",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.1",
-                "tightenco/collect": "^5.6.16"
-            },
-            "require-dev": {
-                "mockery/mockery": "^1.0",
-                "phpunit/phpunit": "^7.5 || ^8.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Laravie\\Parser\\": "src/"
-                },
-                "files": [
-                    "src/helpers.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Mior Muhammad Zaki",
-                    "email": "crynobone@gmail.com",
-                    "homepage": "https://github.com/crynobone"
-                }
-            ],
-            "description": "XML Document Parser for PHP",
-            "keywords": [
-                "parser",
-                "xml"
-            ],
-            "time": "2019-03-29T12:44:01+00:00"
         },
         {
             "name": "league/flysystem",
@@ -2777,56 +2673,6 @@
             "time": "2019-05-01T12:55:36+00:00"
         },
         {
-            "name": "tightenco/collect",
-            "version": "v5.8.18",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/tightenco/collect.git",
-                "reference": "328a1df987fe08969a31b8db474e1c4847202d46"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/tightenco/collect/zipball/328a1df987fe08969a31b8db474e1c4847202d46",
-                "reference": "328a1df987fe08969a31b8db474e1c4847202d46",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.1.3",
-                "symfony/var-dumper": ">=3.4 <5"
-            },
-            "require-dev": {
-                "mockery/mockery": "^1.0",
-                "nesbot/carbon": "^1.26.3",
-                "phpunit/phpunit": "^7.0"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "src/Collect/Support/helpers.php",
-                    "src/Collect/Support/alias.php"
-                ],
-                "psr-4": {
-                    "Tightenco\\Collect\\": "src/Collect"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Taylor Otwell",
-                    "email": "taylorotwell@gmail.com"
-                }
-            ],
-            "description": "Collect - Illuminate Collections as a separate package.",
-            "keywords": [
-                "collection",
-                "laravel"
-            ],
-            "time": "2019-05-18T17:03:47+00:00"
-        },
-        {
             "name": "tijsverkoyen/css-to-inline-styles",
             "version": "2.2.1",
             "source": {
@@ -2872,49 +2718,6 @@
             "description": "CssToInlineStyles is a class that enables you to convert HTML-pages/files into HTML-pages/files with inline styles. This is very useful when you're sending emails.",
             "homepage": "https://github.com/tijsverkoyen/CssToInlineStyles",
             "time": "2017-11-27T11:13:29+00:00"
-        },
-        {
-            "name": "vigneshc91/laravel-test-generator",
-            "version": "v0.0.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/vigneshc91/laravel-test-generator.git",
-                "reference": "09ed581dfc68d165cfefdaf1467e5b31efa90fb6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/vigneshc91/laravel-test-generator/zipball/09ed581dfc68d165cfefdaf1467e5b31efa90fb6",
-                "reference": "09ed581dfc68d165cfefdaf1467e5b31efa90fb6",
-                "shasum": ""
-            },
-            "require": {
-                "fzaninotto/faker": "^1.8"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Vigneshc91\\LaravelTestGenerator\\TestGeneratorServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Vigneshc91\\LaravelTestGenerator\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Vignesh C",
-                    "email": "vignesh.jag@gmail.com"
-                }
-            ],
-            "description": "Laravel package for generating unit test automatically",
-            "time": "2018-07-31T12:12:23+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
@@ -2967,6 +2770,63 @@
                 "environment"
             ],
             "time": "2019-03-06T09:39:45+00:00"
+        },
+        {
+            "name": "zachflower/eloquent-interactions",
+            "version": "v0.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zachflower/eloquent-interactions.git",
+                "reference": "65d434be579eb2da2a486c9ef148324375b1fdcd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zachflower/eloquent-interactions/zipball/65d434be579eb2da2a486c9ef148324375b1fdcd",
+                "reference": "65d434be579eb2da2a486c9ef148324375b1fdcd",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/console": "~5.3|~5.4|~5.5|~5.6",
+                "illuminate/support": "~5.3|~5.4|~5.5|~5.6",
+                "illuminate/validation": "~5.3|~5.4|~5.5|~5.6",
+                "php": "^5.6|~7.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "~1.0",
+                "orchestra/testbench": "~3.0",
+                "phpunit/phpunit": "~5.0|~6.0|~7.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "ZachFlower\\EloquentInteractions\\EloquentInteractionsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "ZachFlower\\EloquentInteractions\\": "src/EloquentInteractions"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Zachary Flower",
+                    "email": "zach@zacharyflower.com"
+                }
+            ],
+            "description": "An implementation of the interactor pattern for Laravel.",
+            "keywords": [
+                "eloquent",
+                "interactor",
+                "laravel",
+                "library"
+            ],
+            "time": "2018-04-21T02:31:44+00:00"
         }
     ],
     "packages-dev": [
@@ -3194,6 +3054,56 @@
             "time": "2018-10-23T09:00:00+00:00"
         },
         {
+            "name": "fzaninotto/faker",
+            "version": "v1.8.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fzaninotto/Faker.git",
+                "reference": "f72816b43e74063c8b10357394b6bba8cb1c10de"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fzaninotto/Faker/zipball/f72816b43e74063c8b10357394b6bba8cb1c10de",
+                "reference": "f72816b43e74063c8b10357394b6bba8cb1c10de",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.3.3 || ^7.0"
+            },
+            "require-dev": {
+                "ext-intl": "*",
+                "phpunit/phpunit": "^4.8.35 || ^5.7",
+                "squizlabs/php_codesniffer": "^1.5"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.8-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Faker\\": "src/Faker/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "François Zaninotto"
+                }
+            ],
+            "description": "Faker is a PHP library that generates fake data for you.",
+            "keywords": [
+                "data",
+                "faker",
+                "fixtures"
+            ],
+            "time": "2018-07-12T10:23:15+00:00"
+        },
+        {
             "name": "hamcrest/hamcrest-php",
             "version": "v2.0.0",
             "source": {
@@ -3281,6 +3191,60 @@
             ],
             "description": "Cascading model updates for Laravel.",
             "time": "2019-01-20T23:17:11+00:00"
+        },
+        {
+            "name": "laravie/parser",
+            "version": "v2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravie/parser.git",
+                "reference": "9073e32c15a19d7c0171bc6000d96d3534b6c941"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravie/parser/zipball/9073e32c15a19d7c0171bc6000d96d3534b6c941",
+                "reference": "9073e32c15a19d7c0171bc6000d96d3534b6c941",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1",
+                "tightenco/collect": "^5.6.16"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.0",
+                "phpunit/phpunit": "^7.5 || ^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravie\\Parser\\": "src/"
+                },
+                "files": [
+                    "src/helpers.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mior Muhammad Zaki",
+                    "email": "crynobone@gmail.com",
+                    "homepage": "https://github.com/crynobone"
+                }
+            ],
+            "description": "XML Document Parser for PHP",
+            "keywords": [
+                "parser",
+                "xml"
+            ],
+            "time": "2019-03-29T12:44:01+00:00"
         },
         {
             "name": "mockery/mockery",
@@ -4770,6 +4734,99 @@
             "time": "2019-04-04T09:56:43+00:00"
         },
         {
+            "name": "tightenco/collect",
+            "version": "v5.8.18",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tightenco/collect.git",
+                "reference": "328a1df987fe08969a31b8db474e1c4847202d46"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tightenco/collect/zipball/328a1df987fe08969a31b8db474e1c4847202d46",
+                "reference": "328a1df987fe08969a31b8db474e1c4847202d46",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1.3",
+                "symfony/var-dumper": ">=3.4 <5"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.0",
+                "nesbot/carbon": "^1.26.3",
+                "phpunit/phpunit": "^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/Collect/Support/helpers.php",
+                    "src/Collect/Support/alias.php"
+                ],
+                "psr-4": {
+                    "Tightenco\\Collect\\": "src/Collect"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylorotwell@gmail.com"
+                }
+            ],
+            "description": "Collect - Illuminate Collections as a separate package.",
+            "keywords": [
+                "collection",
+                "laravel"
+            ],
+            "time": "2019-05-18T17:03:47+00:00"
+        },
+        {
+            "name": "vigneshc91/laravel-test-generator",
+            "version": "v0.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/vigneshc91/laravel-test-generator.git",
+                "reference": "09ed581dfc68d165cfefdaf1467e5b31efa90fb6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/vigneshc91/laravel-test-generator/zipball/09ed581dfc68d165cfefdaf1467e5b31efa90fb6",
+                "reference": "09ed581dfc68d165cfefdaf1467e5b31efa90fb6",
+                "shasum": ""
+            },
+            "require": {
+                "fzaninotto/faker": "^1.8"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Vigneshc91\\LaravelTestGenerator\\TestGeneratorServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Vigneshc91\\LaravelTestGenerator\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Vignesh C",
+                    "email": "vignesh.jag@gmail.com"
+                }
+            ],
+            "description": "Laravel package for generating unit test automatically",
+            "time": "2018-07-31T12:12:23+00:00"
+        },
+        {
             "name": "webmozart/assert",
             "version": "1.4.0",
             "source": {
@@ -4823,9 +4880,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "jrmadsen67/laravel-feature-test-generator": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

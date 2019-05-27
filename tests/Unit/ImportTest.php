@@ -92,6 +92,7 @@ class ImportTest extends TestCase
             'standardhours'      => null,
             'address_id'         => false,
         ];
+
         $response = $this->import->importFromArray([$item]);
 
         $this->assertIsArray($response);

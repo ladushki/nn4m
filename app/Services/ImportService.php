@@ -2,21 +2,15 @@
 
 namespace App\Services;
 
-use App\Exceptions\InvalidContentException;
-use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
+use App\Exceptions\InvalidContentException;
 
-abstract class ImportService
+class ImportService
 {
-
-    use ValidatesRequests;
-
-    public $filename;
-
     protected $request;
     protected $content;
+
+    public $filename;
 
     public $status = [
         'filename'  => '',
@@ -29,7 +23,13 @@ abstract class ImportService
 
     public function __construct(Request $request = null)
     {
+        set_time_limit(0);
+
         $this->request = $request;
+
+        if (method_exists($this, 'init')) {
+            app()->call([$this, 'init']);
+        }
     }
 
     public function load(string $filename)
@@ -81,86 +81,5 @@ abstract class ImportService
 
         return $this;
     }
-
-    public function import(): array
-    {
-        $this->status['filename'] = $this->getFilename();
-
-        $content = $this->getContent();
-
-        DB::beginTransaction();
-        try {
-            $this->importFromArray(current($content));
-
-            if ($this->status['updated'] === 0 && $this->status['inserted'] === 0) {
-                DB::rollBack();
-            } else {
-                DB::commit();
-                $this->status['is_completed'] = true;
-            }
-        } catch (\Exception $e) {
-            DB::rollBack();
-            //dd($e->getMessage());
-        }
-
-        return $this->status;
-    }
-
-    public function importFromArray($data)
-    {
-        $counter = 0;
-
-        collect($data)->each(function ($row) use (&$counter) {
-
-            $counter++;
-
-            $item = $this->map(array_filter($row), $counter);
-
-            $validator = Validator::make($item, $this->rules());
-
-            if ($validator->fails()) {
-                $key = !empty($row['number']) ? $row['number'] : 0;
-
-                $this->status['failed']++;
-                $this->status['errors'][$key] = $validator->errors()->toArray();
-
-                return;
-            }
-
-            if ($this->exists($item)) {
-                try {
-                    $this->update($item);
-                } catch (\Exception $e) {
-                    $this->status['failed']++;
-
-                    return;
-                }
-                $this->status['updated']++;
-            } else {
-
-                try {
-                    $this->create($item);
-                } catch (\Exception $e) {
-                    $this->status['failed']++;
-
-                    return;
-                }
-
-                $this->status['inserted']++;
-            }
-        });
-        return $this->status;
-    }
-
-
-    abstract public function map($row);
-
-    abstract public function rules();
-
-    abstract public function create($item);
-
-    abstract public function update($item);
-
-    abstract public function exists($item);
 
 }

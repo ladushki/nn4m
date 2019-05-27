@@ -7,7 +7,14 @@ interface ImportErrorsRepositoryInterface
 
     public function getLatestLogByStoreNumber($number);
 
-    public function getLatestLogs();
+    public function getLatestErrors();
 
-    public function createLogEntry($importStatus);
+    public function getLatestLog();
+
+    public function findLog();
+
+    public function saveLog($data);
+
+    public function saveErrors($data);
+
 }

@@ -4,25 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Forms\UploadForm;
 use App\ImportLog;
-use App\Repositories\ImportErrorsRepository;
 use App\Services\StoreImportService;
 use Illuminate\Http\Request;
 use Kris\LaravelFormBuilder\FormBuilder;
 
 class ImportController extends Controller
 {
-    public $logRepository;
-    public $importService;
-
-    public function __construct(StoreImportService $importService, ImportErrorsRepository $logRepository)
-    {
-        $this->importService = $importService;
-        $this->logRepository = $logRepository;
-    }
 
     public function index(FormBuilder $formBuilder)
     {
-        $form = $formBuilder->create(\App\Forms\UploadForm::class, [
+        $form = $formBuilder->create(UploadForm::class, [
             'method' => 'POST',
             'url'    => route('import.upload'),
             'label'  => 'Upload xml file',
@@ -32,40 +23,33 @@ class ImportController extends Controller
         return view('import/index', compact('form'));
     }
 
-    public function upload(FormBuilder $formBuilder, Request $request)
+    public function upload(FormBuilder $formBuilder, Request $request, StoreImportService $importService)
     {
         $form = $formBuilder->create(UploadForm::class);
         if (!$form->isValid()) {
             return redirect()->back()->withErrors($form->getErrors())->withInput();
         }
-        $file = $request->file('xml');
-
-        //Display File Name
-        $fileDetails = [
-            'filename' => $file->getClientOriginalName(),
-            'ext'      => $file->getClientOriginalExtension(),
-            'real'     => $file->getRealPath(),
-            'size'     => $file->getSize(),
-            'mine'     => $file->getMimeType(),
-        ];
-
 
         $destinationPath = 'uploads';
+        $file  = $request->file('xml');
+
         $file->move($destinationPath, $file->getClientOriginalName());
         $filename = public_path('uploads/' . $file->getClientOriginalName());
 
-        $status = $this->importService->load($filename)->import();
+        $result = $importService->load($filename)->run();
 
-        $log = $this->logRepository->createLogEntry($status);
+        $logId = ($result && $result->log) ? $result->log->id : 0;
 
-        return \Redirect::route('import.result', $log->id)->with('message', 'The document is proccessed');
-
-
+        return \Redirect::route('import.result', $logId)->with('message', 'The document is processed');
     }
 
     public function result($id)
     {
-        $log = ImportLog::with('errors')->find($id);
+        if (empty($id)) {
+            $log = ImportLog::getLatestLog();
+        } else {
+            $log = ImportLog::with('errors')->find($id);
+        }
 
         return view('import.result', compact('log'));
     }

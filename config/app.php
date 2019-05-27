@@ -179,7 +179,7 @@ return [
         App\Providers\StoreRepositoryServiceProvider::class,
         App\Providers\ImportErrorsRepositoryServiceProvider::class,
         App\Providers\StoreImportServiceServiceProvider::class,
-        App\Providers\AddressImportServiceServiceProvider::class
+        App\Providers\AddressImportServiceServiceProvider::class,
     ],
 
     /*
@@ -230,8 +230,10 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-        'FormBuilder' => Kris\LaravelFormBuilder\Facades\FormBuilder::class
-
+        'FormBuilder' => Kris\LaravelFormBuilder\Facades\FormBuilder::class,
+        'StoreBuilder' => App\Facades\StoreRepositoryFacade::class,
+        'AddressBuilder' => App\Facades\AddressRepositoryFacade::class,
+        'ImportErrorLogger' => App\Facades\ImportErrorsRepositoryFacade::class,
     ],
 
 ];

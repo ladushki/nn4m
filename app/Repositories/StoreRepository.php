@@ -29,6 +29,11 @@ class StoreRepository implements StoreRepInterface
         return $store ?? null;
     }
 
+    public function save($item)
+    {
+        return $this->model->updateOrCreate(['store_number' => $item['store_number']], $item);
+    }
+
     public function create($item)
     {
         return $this->model->create($item);

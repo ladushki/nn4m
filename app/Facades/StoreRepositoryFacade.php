@@ -3,14 +3,15 @@
 
 namespace App\Facades;
 
-use App\Repositories\AddressRepository;
+use App\Repositories\StoreRepository;
+
 use Illuminate\Support\Facades\Facade;
 
-class AddressRepositoryFacade extends Facade
+class StoreRepositoryFacade extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return AddressRepository::class;
+        return StoreRepository::class;
     }
 
 }

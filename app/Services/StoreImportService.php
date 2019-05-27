@@ -2,47 +2,16 @@
 
 namespace App\Services;
 
-use App\Repositories\AddressRepository;
-use App\Repositories\StoreRepository;
-use App\Store;
-use Illuminate\Http\Request;
+use App\Interactions\CreateAddress;
+use App\Interactions\CreateStore;
+use Illuminate\Support\Facades\DB;
+use ImportErrorLogger;
 
 class StoreImportService extends ImportService
 {
+    public $log;
 
-    public $store;
-    public $storeRepository;
-    public $importLogRepository;
-    public $addressRepository;
-
-    public function __construct(
-        Request $request,
-        StoreRepository $storeRepository,
-        AddressRepository $addressRepository
-    ) {
-        parent::__construct($request);
-        $this->storeRepository = $storeRepository;
-        $this->addressRepository = $addressRepository;
-    }
-
-    public function rules(): array
-    {
-        return [
-            'name'         => 'required|max:255',
-            'address_id'   => 'required',
-            'store_number' => 'required|integer',
-            'site_id'      => 'required',
-            'phone_number' => 'required',
-            'cfs_flag'     => 'required|integer',
-        ];
-    }
-
-    /**
-     * @param $row
-     *
-     * @return array
-     */
-    public function map($row, $counter = 0): array
+    public function map($row): array
     {
 
         $addressId = $this->getAddressId($row);
@@ -63,33 +32,102 @@ class StoreImportService extends ImportService
         return $arr;
     }
 
+    public function mapAddress($row): array
+    {
+        if (!isset($row['address'], $row['coordinates'])) {
+            return [];
+        }
+
+        $address     = $row['address'];
+        $coordinates = $row['coordinates'];
+
+        return [
+            'address_line_1' => !empty($address['address_line_1']) ? $address['address_line_1'] : null,
+            'address_line_2' => !empty($address['address_line_2']) ? $address['address_line_2'] : null,
+            'address_line_3' => !empty($address['address_line_3']) ? $address['address_line_3'] : null,
+            'city'           => !empty($address['city']) ? $address['city'] : null,
+            'county'         => !empty($address['county']) ? $address['county'] : null,
+            'country'        => !empty($address['country']) ? $address['country'] : null,
+            'lat'            => !empty($coordinates['lat']) ? $coordinates['lat'] : null,
+            'lon'            => !empty($coordinates['lon']) ? $coordinates['lon'] : null,
+        ];
+    }
+
     public function getAddressId($row)
     {
-        $addressImport = new AddressImportService($this->request, $this->addressRepository);
+        $addressData = $this->mapAddress(array_filter($row));
 
-        if ($address = $addressImport->run($row)) {
-            return $address;
+        $address = CreateAddress::run($addressData);
+
+        if ($address->valid) {
+            return $address->result->id;
         }
 
         return false;
     }
 
-    public function exists($item): bool
+    public function run()
     {
-        $this->store = $this->storeRepository->getStoreByNumber((int)$item['store_number']);
+        $this->status['filename'] = $this->getFilename();
 
-        return (bool)$this->store;
+        $content = $this->getContent();
+
+        DB::beginTransaction();
+        try {
+            ImportErrorLogger::saveLog($this->status);
+            $this->importFromArray(current($content));
+
+            if (($this->status['updated'] + $this->status['inserted']) === 0) {
+                DB::rollBack();
+                return false;
+            } else {
+                DB::commit();
+                $this->status['is_completed'] = true;
+                ImportErrorLogger::saveLog($this->status);
+            }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return false;
+        }
+        $this->log = ImportErrorLogger::findLog();
+        return $this;
     }
 
-    public function create($row): Store
-    {
-        $this->store = $this->storeRepository->create($row);
 
-        return $this->store;
-    }
-
-    public function update($item): Store
+    public function importFromArray($data)
     {
-        return $this->storeRepository->update($item);
+        $counter = 0;
+
+        collect($data)->each(function ($row) use (&$counter) {
+            $counter++;
+            $storeData = $this->map(array_filter($row));
+            $outcome = CreateStore::run($storeData);
+
+            if ($outcome->valid) {
+                if ($outcome->result->wasRecentlyCreated) {
+                    $this->status['inserted']++;
+                } else {
+                    $this->status['updated']++;
+                }
+                return [
+                    'success' => true,
+                    'store'   => $outcome->result,
+                ];
+            }
+
+            $this->status['failed']++;
+
+            $key = !empty($row['number']) ? $row['number'] : 0;
+            $this->status['errors'][$key] = $outcome->errors->toArray();
+
+            ImportErrorLogger::saveErrors($this->status['errors']);
+
+            return [
+                'success' => false,
+                'errors'  => $this->status['errors'][$key],
+            ];
+        });
+
+        return $this->status;
     }
 }

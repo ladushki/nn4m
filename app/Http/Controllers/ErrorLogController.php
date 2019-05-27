@@ -22,7 +22,7 @@ class ErrorLogController extends Controller
     public function index(): ResourceCollection
     {
 
-        return LogResource::collection($this->repository->getLatestLogs());
+        return LogResource::collection($this->repository->getLatestErrors());
     }
 
     /**
