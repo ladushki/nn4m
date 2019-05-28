@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Address;
+use AddressBuilder;
 use App\Repositories\AddressRepository;
 use Tests\TestCase;
 
@@ -11,75 +11,22 @@ class AddressRepoTest extends TestCase
 
     public $repository;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->repository = new AddressRepository(new Address());
-    }
-
-
-    public function testNotExists()
-    {
-        $item = $this->getItem();
-      
-        $response = $this->repository->exists($item);
-        $this->assertFalse($response);
-    }
-
-    public function testCreate()
+    public function testSave()
     {
         $item = $this->getItem();
 
-        $response = $this->repository->create($item);
+        $response = AddressBuilder::save($item);
 
         $this->assertIsObject($response);
         $this->assertEquals($response->address_line_2, 'Debenhams Bedford');
         $this->assertNotEquals($response->address_line_1, 'Debenhams Bedford');
     }
 
-    public function testUpdate()
+    public function testServiceProvider()
     {
-        $item = $this->getItem();
-
-        $row = factory(Address::class)->create($item);
-
-
-        $item['address_line_1'] = 'Test2';
-
-        $response = $this->repository->update($item);
-
-        $this->assertIsInt($response);
+        $this->assertTrue($this->app->bound('Repositories\AddressRepositoryInterface'));
+        $this->assertInstanceOf(AddressRepository::class, $this->app->get('Repositories\AddressRepositoryInterface'));
     }
-
-    public function testFind()
-    {
-        $item = $this->getItem();
-
-        $row = factory(Address::class)->create($item);
-
-        $response = $this->repository->find($row->id);
-
-        $this->assertIsObject($response);
-    }
-
-    public function testGetAddressByCoordinates()
-    {
-        $item =$this->getItem();
-        factory(Address::class)->create($item);
-
-        $response = $this->repository->getAddressByCoordinates('-0.466730',  '52.136900');
-
-        $this->assertIsObject($response);
-        $this->assertEquals($response->address_line_2, 'Debenhams Bedford');
-        $this->assertNotEquals($response->address_line_1, 'Debenhams Bedford');
-    }
-
-    public function tearDown(): void
-    {
-        parent::tearDown();
-    }
-
     /**
      * @return array
      */

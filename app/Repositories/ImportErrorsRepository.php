@@ -12,6 +12,22 @@ class ImportErrorsRepository implements ErrorRepInterface
     protected $model;
     protected $parentModel;
 
+    /**
+     * @return ImportLogError
+     */
+    public function getModel(): ImportLogError
+    {
+        return $this->model;
+    }
+
+    /**
+     * @return ImportLog
+     */
+    public function getParentModel(): ImportLog
+    {
+        return $this->parentModel;
+    }
+
     public function __construct(ImportLog $parentModel, ImportLogError $model)
     {
         $this->model       = $model;
@@ -40,6 +56,13 @@ class ImportErrorsRepository implements ErrorRepInterface
         return $store ?? null;
     }
 
+    public function getLogById($id)
+    {
+        $store = $this->parentModel->where('id', '=', (int)$id)->first();
+
+        return $store ?? null;
+    }
+
     public function saveLog($status)
     {
         return $this->parentModel->fill($status)->save();
@@ -47,16 +70,18 @@ class ImportErrorsRepository implements ErrorRepInterface
 
     public function saveErrors($errors)
     {
-        collect($errors)->each(function ($errors, $storeNumber) {
+
+        collect($errors)->each(function ($errors, $storeNumber){
             return collect($errors)->each(function ($error, $name) use ($storeNumber) {
-                $errorLog = $this->model->firstOrCreate([
+                $errorLog = $this->model->firstOrNew([
                     'store_number'  => $storeNumber,
                     'column_name'   => $name,
                     'description'   => implode(';', (array)$error),
                 ]);
 
-                $this->parentModel->errors()->save($errorLog);
+                $this->getParentModel()->errors()->save($errorLog);
             });
         });
+        return  $this->getParentModel()->errors;
     }
 }

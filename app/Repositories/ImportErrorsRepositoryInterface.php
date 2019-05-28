@@ -17,4 +17,6 @@ interface ImportErrorsRepositoryInterface
 
     public function saveErrors($data);
 
+    public function getLogById($id);
+
 }

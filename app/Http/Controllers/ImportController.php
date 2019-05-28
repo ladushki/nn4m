@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Forms\UploadForm;
-use App\ImportLog;
+use ImportErrorLogger;
 use App\Services\StoreImportService;
 use Illuminate\Http\Request;
 use Kris\LaravelFormBuilder\FormBuilder;
@@ -43,12 +43,12 @@ class ImportController extends Controller
         return \Redirect::route('import.result', $logId)->with('message', 'The document is processed');
     }
 
-    public function result($id)
+    public function result($id = null)
     {
         if (empty($id)) {
-            $log = ImportLog::getLatestLog();
+            $log = ImportErrorLogger::getLatestLog();
         } else {
-            $log = ImportLog::with('errors')->find($id);
+            $log = ImportErrorLogger::getLogById($id);
         }
 
         return view('import.result', compact('log'));

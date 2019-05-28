@@ -11,7 +11,10 @@
                     <div class="card-header">Import XML</div>
 
                     <div class="card-body">
-                        <a href="{{ route('import.index')  }}" class="button">Start over</a>
+                        <a href="{{ route('import.index')  }}" class="button">Start over</a><br>
+                        <br>
+                        <a href="{{ route('api.store')  }}" class="button">{{ route('api.store')  }}</a><br>
+                        <a href="{{ route('api.error')  }}" class="button">{{ route('api.error')  }}</a>
                         <br />
                         <table class="table">
                             <thead>
@@ -33,7 +36,7 @@
                 </div>
                 @if($log->failed > 0)
                     <div class="card">
-                        @if($log->completed != true)
+                        @if($log->is_completed != true)
                             <div class="card-header">The import has failed </div>
                         @endif
                         <div class="card-header">Error report</div>

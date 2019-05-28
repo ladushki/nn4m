@@ -4,6 +4,7 @@
 namespace App\Providers;
 
 use App\Address;
+use App\Repositories\AddressRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AddressRepositoryServiceProvider extends ServiceProvider

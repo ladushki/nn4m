@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::get('/store', 'StoreController@index');
-Route::get('/store/{number}', 'StoreController@show');
-Route::get('/error', 'ErrorLogController@index');
-Route::get('/error/{number}', 'ErrorLogController@show');
+Route::get('/store', ['uses' => 'StoreController@index', 'as' => 'api.store']);
+Route::get('/store/{number}', ['uses' => 'StoreController@show', 'as' => 'api.show_store']);
+Route::get('/error', ['uses' => 'ErrorLogController@index', 'as' => 'api.error']);
+Route::get('/error/{number}', ['uses' => 'ErrorLogController@show', 'as' => 'api.show_error']);

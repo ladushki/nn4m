@@ -2,11 +2,10 @@
 
 namespace Tests\Unit;
 
-use App\Address;
-use App\Repositories\AddressRepository;
-use App\Repositories\StoreRepository;
+use App\Interactions\CreateAddress;
+use App\Interactions\CreateStore;
+use App\Providers\StoreImportServiceServiceProvider;
 use App\Services\StoreImportService;
-use App\Store;
 use Illuminate\Http\Request;
 use Mockery;
 use Tests\TestCase;
@@ -23,26 +22,23 @@ class ImportTest extends TestCase
         parent::setUp();
         $this->storeImport = Mockery::mock('App\Services\StoreImportService');
 
-        $this->import = new StoreImportService(
-            \Mockery::mock(Request::class),
-            \Mockery::mock(StoreRepository::class),
-            \Mockery::mock(AddressRepository::class)
-        );
+        $this->import = new StoreImportService(\Mockery::mock(Request::class));
     }
 
-    public function testTets()
+    public function testImportServiceProvider()
     {
-        $storeImport = new StoreImportService(new Request(),
-            new StoreRepository(new Store()), new AddressRepository(new Address()));
-        $storeImport->resolveXmlObject($this->xml());
-        $storeImport->setFilename('test.xml');
 
-        $content = $storeImport->getContent();
+        $provider = $this->app->getProvider(StoreImportServiceServiceProvider::class);
+        $this->assertInstanceOf(StoreImportServiceServiceProvider::class, $provider);
 
-        $this->expectException(\ErrorException::class);
-        $storeImport->importFromArray(current($content));
+        $this->assertTrue($this->app->bound('storeImportService'));
+        $this->assertInstanceOf(StoreImportService::class, $this->app->get('storeImportService'));
+
+        $expected = [
+            StoreImportService::class,
+        ];
+        $this->assertSame($expected, $provider->provides());
     }
-
 
     public function testParseXml()
     {
@@ -78,9 +74,9 @@ class ImportTest extends TestCase
         ], $response);
     }
 
-    public function testStoreValidate()
+    public function testStoreCreateInvalid()
     {
-        $item     = [
+        $item = [
             'store_number'       => 123,
             'name'               => 'Test',
             'site_id'            => null,
@@ -93,13 +89,70 @@ class ImportTest extends TestCase
             'address_id'         => false,
         ];
 
-        $response = $this->import->importFromArray([$item]);
+        $response = CreateStore::run($item);
 
-        $this->assertIsArray($response);
+        $this->assertFalse($response->valid);
+        $this->assertNotEmpty($response->errors);
+    }
 
-        $this->assertNotEmpty($this->import->status['errors']);
+    public function testStoreCreate()
+    {
+        $item = [
+            'store_number'       => 123,
+            'name'               => 'Test',
+            'site_id'            => 1,
+            'phone_number'       => 1231231,
+            'manager'            => null,
+            'cfslocation'        => null,
+            'delivery_lead_time' => null,
+            'cfs_flag'           => 1,
+            'standardhours'      => '',
+            'address_id'         => 1,
+        ];
 
-        $this->assertEquals($this->import->status['inserted'], 0);
+        $response = CreateStore::run($item);
+
+        $this->assertTrue($response->valid);
+        $this->assertEmpty($response->errors);
+        $this->assertEquals('Test', $response->result->name);
+    }
+
+    public function testAddressCreateInvalid()
+    {
+        $item = [
+            'address_line_1' => 'Debenhams Retail plc',
+            'address_line_2' => 'Debenhams Bedford',
+            'address_line_3' => '48-54 High Street',
+            'city'           => 'Bedford',
+            'county'         => 'Bedfordshire',
+            'country'        => 'United Kingdom',
+            'lat'            => 'test',
+        ];
+
+        $response = CreateAddress::run($item);
+
+        $this->assertFalse($response->valid);
+        $this->assertNotEmpty($response->errors);
+    }
+
+    public function testAddressCreate()
+    {
+        $item = [
+            'address_line_1' => 'Debenhams Retail plc',
+            'address_line_2' => 'Debenhams Bedford',
+            'address_line_3' => '48-54 High Street',
+            'city'           => 'Bedford',
+            'county'         => 'Bedfordshire',
+            'country'        => 'United Kingdom',
+            'lat'            => '52.136900',
+            'lon'            => '-0.466730',
+        ];
+
+        $response = CreateAddress::run($item);
+
+        $this->assertTrue($response->valid);
+        $this->assertEmpty($response->errors);
+        $this->assertEquals('Debenhams Retail plc', $response->result->address_line_1);
     }
 
     public function tearDown(): void

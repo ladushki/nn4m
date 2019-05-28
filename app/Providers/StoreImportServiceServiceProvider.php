@@ -19,10 +19,14 @@ class StoreImportServiceServiceProvider extends ServiceProvider
     {
         $this->app->bind('storeImportService', static function ($app) {
             return new StoreImportService(
-                new Request(),
-                $app->make('Repositories\StoreRepository'),
-                $app->make('Repositories\AddressRepository')
+                new Request()
             );
         });
+    }
+    public function provides()
+    {
+        return [
+            'App\Services\StoreImportService',
+        ];
     }
 }

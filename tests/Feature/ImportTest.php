@@ -2,11 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Address;
 use App\Exceptions\InvalidContentException;
 use App\ImportLog;
-use App\Repositories\AddressRepository;
-use App\Repositories\StoreRepository;
 use App\Services\AddressImportService;
 use App\Services\StoreImportService;
 use Illuminate\Http\Request;
@@ -48,94 +45,79 @@ class ImportTest extends TestCase
         $response = $this->json('POST', '/upload', []);
 
         $response->assertStatus(302);
-
     }
 
     public function testStoreFailedImport()
     {
-        $data     = '<xml><test></test></xml>';
-        $response = $this->setImportData($data);
-        $content  = $response->getContent();
+        $data    = '<xml><test></test></xml>';
+        $request = \Mockery::mock(Request::class);
+        $import  = \Mockery::mock(new StoreImportService($request));
+
+        $response = $import->resolveXmlObject($data);
+        $response->setFilename('test.xml');
+        $content = $response->getContent();
 
         $this->assertIsArray($content);
         $this->assertArrayHasKey('test', $content);
 
-        $result = $response->import();
+        $result = $response->run();
 
-        $this->assertIsArray($result);
-        $this->assertFalse($result['is_completed']);
+        $this->assertFalse($result);
+        $this->assertEquals($response->status['is_completed'], false);
     }
 
-    public function testStoreImport()
+    public function testInsert()
     {
-        $data              = $this->xml();
-        $request           = \Mockery::mock(Request::class);
-        $storeRepository   = \Mockery::mock(StoreRepository::class);
-        $addressRepository = \Mockery::mock(AddressRepository::class);
-
-        $import        = new StoreImportService($request, $storeRepository, $addressRepository);
-        $addressImport = new AddressImportService($request, $addressRepository);
+        $data    = $this->xml();
+        $request = \Mockery::mock(Request::class);
+        $import  = \Mockery::mock(new StoreImportService($request));
 
         $response = $import->resolveXmlObject($data);
-
         $response->setFilename('test.xml');
-
         $content = $response->getContent();
 
-        $row = [
-            "address_line_1" => "Debenhams Retail plc",
-            "address_line_2" => "Debenhams Bedford",
-            "address_line_3" => "48-54 High Street",
-            "city"           => "Bedford",
-            "county"         => "Bedfordshire",
-            "country"        => "United Kingdom",
-            "lat"            => "52.136900",
-            "lon"            => "-0.466730",
-        ];
-        $addressImport->addressRepository->shouldReceive('getAddressByCoordinates')
-                                         ->with('-0.466730', '52.136900')
-                                         ->once()
-                                         ->andReturn(Address::class);
+        $this->assertIsArray($content);
+        $this->assertArrayHasKey('stores', $content);
 
-        $mapped = $addressImport->map($content['stores']['store']);
-        $addressImport->addressRepository->shouldReceive('getAddressByCoordinates')
-                                         ->with('-0.466730', '52.136900')
-                                         ->once()
-                                         ->andReturn(Address::class);
-        $exists  = $addressImport->exists($mapped);
-        $address = \Mockery::mock('Eloquent', 'App\Address');
+        $result = $response->run();
 
-        if ($exists) {
-            $addressImport->addressRepository->shouldReceive('update')->with($mapped)->andReturn($address);
-        } else {
-            $addressImport->addressRepository->shouldReceive('create')->with($mapped)->andReturn($address);
-        }
-
-
-        $storeMapped = $import->map(array_filter($content['stores']['store']), 0);
-
-        $import->storeRepository->shouldReceive('getStoreByNumber')->once()->with('103');
-
-        $store = \Mockery::mock('Eloquent', 'App\Store');
-
-        $storeExists = $import->exists($storeMapped);
-        if ($storeExists) {
-            $import->storeRepository->shouldReceive('update')->with($storeMapped)->andReturn($store);
-        } else {
-            $import->storeRepository->shouldReceive('create')->with($storeMapped)->andReturn($store);
-        }
-
-        // $import->storeRepository->shouldReceive('exists')->once()->with($content['stores']['store']);
-
-        //  $response = $addressImport->run($content['stores']['store']);
+        $this->assertIsObject($result);
+        $this->assertEquals($response->status['is_completed'], true);
+        $this->assertEquals($response->status['inserted'], 1);
+        $this->assertEquals($response->status['updated'], 0);
     }
+
+    public function testUpdate()
+    {
+        $data    = $this->xml();
+        $request = \Mockery::mock(Request::class);
+        $import  = \Mockery::mock(new StoreImportService($request));
+
+        $response = $import->resolveXmlObject($data);
+        $response->setFilename('test.xml');
+        $content = $response->getContent();
+
+        $this->assertIsArray($content);
+        $this->assertArrayHasKey('stores', $content);
+
+        $result = $response->run();
+
+        $this->assertIsObject($result);
+        $this->assertEquals($response->status['is_completed'], true);
+        $this->assertEquals($response->status['inserted'], 1);
+        $this->assertEquals($response->status['updated'], 0);
+
+
+        $response2 = $import->resolveXmlObject($data);
+        $response2->run();
+        $this->assertEquals($response->status['updated'], 1);
+    }
+
 
     public function testSetXml()
     {
-        $request           = \Mockery::mock(Request::class);
-        $storeRepository   = \Mockery::mock(StoreRepository::class);
-        $addressRepository = \Mockery::mock(AddressRepository::class);
-        $import = new StoreImportService($request, $storeRepository, $addressRepository);
+        $request = \Mockery::mock(Request::class);
+        $import  = new StoreImportService($request);
 
         $this->expectException(InvalidContentException::class);
         $response = $import->resolveXmlObject('');
@@ -143,54 +125,12 @@ class ImportTest extends TestCase
         $this->assertEquals([], $response->getContent());
     }
 
-    public function testAddressImport()
-    {
-        $data              = $this->xml();
-        $request           = \Mockery::mock(Request::class);
-        $storeRepository   = \Mockery::mock(StoreRepository::class);
-        $addressRepository = \Mockery::mock(AddressRepository::class);
-
-        $import        = new StoreImportService($request, $storeRepository, $addressRepository);
-        $addressImport = new AddressImportService($request, $addressRepository);
-
-        $response = $import->resolveXmlObject($data);
-
-        $response->setFilename('test.xml');
-
-        $content = $response->getContent();
-
-        $row = [
-            "address_line_1" => "Debenhams Retail plc",
-            "address_line_2" => "Debenhams Bedford",
-            "address_line_3" => "48-54 High Street",
-            "city"           => "Bedford",
-            "county"         => "Bedfordshire",
-            "country"        => "United Kingdom",
-            "lat"            => "52.136900",
-            "lon"            => "-0.466730",
-        ];
-
-        $mapped = $addressImport->map($content['stores']['store']);
-        $addressImport->addressRepository->shouldReceive('getAddressByCoordinates')
-                                         ->with('-0.466730', '52.136900')
-                                         ->once()
-                                         ->andReturn(Address::class);
-        $exists  = $addressImport->exists($mapped);
-        $address = \Mockery::mock('Eloquent', 'App\Address');
-
-        if ($exists) {
-            $addressImport->addressRepository->shouldReceive('update')->with($mapped)->andReturn($address);
-        } else {
-            $addressImport->addressRepository->shouldReceive('create')->with($mapped)->andReturn($address);
-        }
-    }
-
-    public function testUpload()
+    public function testUploadValidation()
     {
         Storage::fake('uploads');
 
         $response = $this->json('POST', '/upload', [
-            'xml' => UploadedFile::fake()->create('stores.pdf', 2000),
+            'xml' => UploadedFile::fake()->create('stores.pdf', 200),
         ]);
 
         $response->assertSessionHasErrors(['xml']);
@@ -210,44 +150,15 @@ class ImportTest extends TestCase
 
     public function testFileLoad()
     {
-        $request           = \Mockery::mock(Request::class);
-        $storeRepository   = \Mockery::mock(StoreRepository::class);
-        $addressRepository = \Mockery::mock(AddressRepository::class);
+        $request = \Mockery::mock(Request::class);
 
         $this->expectException(InvalidContentException::class);
 
-        $import = new StoreImportService($request, $storeRepository, $addressRepository);
+        $import   = new StoreImportService($request);
         $response = $import->load('test.txt');
         $response->assertStatus(500);
     }
 
-    public function testLog()
-    {
-        $newLog = factory(ImportLog::class)->create([
-            'filename' => 'test.xml',
-        ]);
-
-        $this->assertEquals($newLog->filename, 'test.xml');
-        $log = ImportLog::latest()->first();
-
-        $this->assertEquals($log->id, $newLog->id);
-    }
-
-
-    protected function setImportData($data)
-    {
-        $request           = \Mockery::mock(Request::class);
-        $storeRepository   = \Mockery::mock(StoreRepository::class);
-        $addressRepository = \Mockery::mock(AddressRepository::class);
-
-        $import = \Mockery::mock(new StoreImportService($request, $storeRepository, $addressRepository));
-
-        $response = $import->resolveXmlObject($data);
-
-        $response->setFilename('test.xml');
-
-        return $response;
-    }
 
     public function xml()
     {

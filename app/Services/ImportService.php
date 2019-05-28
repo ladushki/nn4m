@@ -26,10 +26,6 @@ class ImportService
         set_time_limit(0);
 
         $this->request = $request;
-
-        if (method_exists($this, 'init')) {
-            app()->call([$this, 'init']);
-        }
     }
 
     public function load(string $filename)

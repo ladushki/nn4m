@@ -2,7 +2,10 @@
 
 namespace Tests\Unit;
 
+use App\Providers\StoreImportServiceServiceProvider;
+use App\Providers\StoreRepositoryServiceProvider;
 use App\Repositories\StoreRepository;
+use App\Services\StoreImportService;
 use App\Store;
 use Tests\TestCase;
 
@@ -109,6 +112,17 @@ class StoreRepoTest extends TestCase
 
         $this->assertIsObject($response);
         $this->assertEquals('Test', $response->name);
+    }
+
+    public function testServiceProvider()
+    {
+
+        $provider = $this->app->getProvider(StoreRepositoryServiceProvider::class);
+        $this->assertInstanceOf(StoreRepositoryServiceProvider::class, $provider);
+
+        $this->assertTrue($this->app->bound('Repositories\StoreRepositoryInterface'));
+
+        $this->assertInstanceOf(StoreRepository::class, $this->app->get('Repositories\StoreRepositoryInterface'));
     }
 
     public function tearDown(): void

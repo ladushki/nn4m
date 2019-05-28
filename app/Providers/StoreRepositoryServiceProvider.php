@@ -6,6 +6,7 @@ namespace App\Providers;
 
 use App\Store;
 use Illuminate\Support\ServiceProvider;
+use App\Repositories\StoreRepository;
 
 class StoreRepositoryServiceProvider extends ServiceProvider
 {
