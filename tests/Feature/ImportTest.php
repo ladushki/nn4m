@@ -21,13 +21,6 @@ class ImportTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testResultsWithError()
-    {
-        $response = $this->json('GET', '/results/', []);
-
-        $response->assertStatus(404);
-    }
-
     public function testShowResults()
     {
         $log = factory(ImportLog::class)->create([

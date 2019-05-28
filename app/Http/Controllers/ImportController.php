@@ -40,15 +40,15 @@ class ImportController extends Controller
 
         $logId = ($result && $result->log) ? $result->log->id : 0;
 
-        return \Redirect::route('import.result', $logId)->with('message', 'The document is processed');
+        return \Redirect::route('import.results', [$logId])->with('message', 'The document is processed');
     }
 
     public function result($id = null)
     {
-        if (empty($id)) {
-            $log = ImportErrorLogger::getLatestLog();
-        } else {
-            $log = ImportErrorLogger::getLogById($id);
+        $log = ImportErrorLogger::getLogById($id);
+
+        if (!$log) {
+            abort('404');
         }
 
         return view('import.result', compact('log'));

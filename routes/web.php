@@ -13,8 +13,7 @@
 
 Route::get('/', ['uses' => 'ImportController@index', 'as' => 'import.index']);
 Route::post('upload', ['uses' => 'ImportController@upload', 'as' => 'import.upload']);
-Route::get('results/', ['uses' => 'ImportController@result', 'as' => 'import.result']);
-Route::get('results/{id}', ['uses' => 'ImportController@result', 'as' => 'import.show']);
+Route::get('results/{id}', ['uses' => 'ImportController@result', 'as' => 'import.results']);
 
 Auth::routes();
 

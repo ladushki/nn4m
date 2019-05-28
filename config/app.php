@@ -179,7 +179,7 @@ return [
         App\Providers\StoreRepositoryServiceProvider::class,
         App\Providers\ImportErrorsRepositoryServiceProvider::class,
         App\Providers\StoreImportServiceServiceProvider::class,
-        App\Providers\AddressImportServiceServiceProvider::class,
+        App\Providers\StoreImportServiceServiceProvider::class,
     ],
 
     /*

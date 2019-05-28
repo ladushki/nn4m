@@ -1,11 +1,12 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateAddressesTable extends Migration
 {
+
     /**
      * Run the migrations.
      *
@@ -39,6 +40,7 @@ class CreateAddressesTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('stores');
         Schema::dropIfExists('addresses');
     }
 }

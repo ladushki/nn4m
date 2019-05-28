@@ -16,7 +16,7 @@ class ResultTest extends TestCase
      */
     public function testIndexWithError()
     {
-        $response = $this->json('GET', '/results', []);
+        $response = $this->get('/results');
 
         $response->assertStatus(404);
     }
@@ -29,12 +29,8 @@ class ResultTest extends TestCase
     public function testIndex()
     {
         $log = factory(ImportLog::class)->create();
-        $response = $this->json('GET', '/results/'.$log->id, []);
+        $response = $this->get('/results/'.$log->id);
 
         $response->assertStatus(200);
-        $response = $this->json('GET', '/results/1', []);
-
-        $response->assertStatus(200);
-
     }
 }
